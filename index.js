@@ -57,6 +57,30 @@ app.delete("/api/delete/:id",(req,res)=>{
     })
 })
 
+app.put("/api/update/:id",(req,res)=>{
+    const {id}=req.params;
+    const {firstName, lastName, email, phoneNumber, passwords, confirmPasswords, age, gender, department, interests, birthDate}=req.body;
+
+    const formattedDate= new Date(birthDate).toISOString().split("T")[0];
+
+    if(passwords !== confirmPasswords){
+        return res.status(400).json({message:"Passwords are not matching."})
+    }
+
+    const interetstString=Array.isArray(interests) ? interests.join(","):"";
+
+    const sqlUpdate="UPDATE employee SET firstName=? , lastName=? , email=? ,phoneNumber=? ,passwords=? ,confirmPasswords=? ,age=? ,gender=? ,department=? ,interests=? ,birthDate=? WHERE id=?";
+
+    db.query(sqlUpdate,[firstName, lastName, email, phoneNumber, passwords, confirmPasswords, age, gender, department, interetstString, formattedDate,id],(err,result)=>{
+        if(err){
+            console.log("Error:- ",err);
+            res.status(400).json({error:"Fail to update data."})            
+        }
+
+        res.status(200).json({message:"Successfully data updated."})
+    })
+})
+
 app.listen(5000, () => {
   console.log("Backend Server Started At Port: 5000");
 });
