@@ -108,6 +108,32 @@ app.get("/api/search",(req,res)=>{
     })
 })
 
+app.get("/api/sort",(req,res)=>{
+    const {sortField,sortOrder}=req.query;
+
+    const allowedFields=['firstName','lastName','email'];
+    const allowedOrder=['ASC','DESC'];
+
+    if(!allowedFields.includes(sortField)){
+        return res.status(400).json({error:"Invalid sorting field."})
+    }
+
+    sortOrder=sortOrder.toUpperCase();
+    if(!allowedOrder.includes(sortOrder)){
+        return res.status(400).json({error:"Invalid Sorting Order."})
+    }
+
+    const sqlSort=`SELECT * FROM employee ORDER BY ${sortField} ${sortOrder}`;
+
+    db.query(sqlSort,(err,result)=>{
+        if(err){
+            console.log("Error:- ",err);
+            res.status(400).json({error:"Fail to sort"})            
+        }
+        res.send(result);
+    })
+})
+
 app.listen(5000, () => {
   console.log("Backend Server Started At Port: 5000");
 });
