@@ -94,6 +94,20 @@ app.get("/api/get/:id",(req,res)=>{
     })
 })
 
+app.get("/api/search",(req,res)=>{
+    const {firstName,lastName,email,phoneNumber}=req.query;
+
+    const sqlSearch="SELECT * FROM employee WHERE firstName LIKE ? OR lastName LIKE ? OR email LIKE ? OR phoneNumber LIKE ?";
+
+    db.query(sqlSearch,[`%${firstName}%`,`%${lastName}%`,`%${email}%`,`%${phoneNumber}%`],(err,result)=>{
+        if(err){
+            console.log("Error:- ",err);
+            res.status(400).json({error:"Fail to search data."})            
+        }
+        res.send(result);
+    })
+})
+
 app.listen(5000, () => {
   console.log("Backend Server Started At Port: 5000");
 });
