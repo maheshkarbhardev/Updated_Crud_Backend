@@ -44,7 +44,18 @@ app.get("/api/get",(req,res)=>{
     })
 })
 
+app.delete("/api/delete/:id",(req,res)=>{
+    const {id}=req.params;
+    const sqlDelete="DELETE FROM employee WHERE id=?";
 
+    db.query(sqlDelete,id,(err,result)=>{
+        if(err){
+            console.log("Error:- ",err);
+            res.status(400).json({error:"Fail to insert data."})            
+        }
+        res.status(200).json({message:"Data deleted Successfully."})
+    })
+})
 
 app.listen(5000, () => {
   console.log("Backend Server Started At Port: 5000");
