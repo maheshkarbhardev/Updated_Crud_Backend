@@ -81,6 +81,19 @@ app.put("/api/update/:id",(req,res)=>{
     })
 })
 
+app.get("/api/get/:id",(req,res)=>{
+    const {id}=req.params;
+    const sqlGet="SELECT * FROM employee WHERE id=?";
+
+    db.query(sqlGet,id,(err,result)=>{
+        if(err){
+            console.log("Error:- ",err);
+            res.status(400).json({error:"Fail to fetch data."})            
+        }
+        res.send(result);
+    })
+})
+
 app.listen(5000, () => {
   console.log("Backend Server Started At Port: 5000");
 });
